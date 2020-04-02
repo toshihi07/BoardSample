@@ -1,0 +1,119 @@
+body {
+  box-sizing: border-box;
+}
+
+.container{
+  width: 80%;
+}
+
+.comment-container {
+  width: 40%;
+  margin: 0 auto;
+  padding:0 10px;
+  border:1px solid #6EA7DD;
+}
+
+.comment-contents {
+	padding: 10px 0;
+	border-bottom:1px solid #DDE4E6;
+}
+
+.content-footer {
+	justify-content:flex-end;
+}
+
+
+.edit-btn {
+	font-size:0.8rem;
+	margin: 0 10px;
+
+}
+.upload-form {
+	margin: 10px 0;
+	text-align:center;
+}
+
+
+.btn-block {
+  width: 30%;
+  margin: auto;
+}
+
+.p-header {
+	height:56px;
+	width:100%;
+	margin:auto;
+    color:#212529;
+}
+.p-header-container {
+	width:80%;
+	margin: 0 auto;
+}
+
+.title {
+	font-size:10px;
+	margin:10px auto;
+}
+
+.titlesearch {
+	display:none;
+}
+.textsearch {
+	display:none;
+}
+.cp_ipselect {
+	overflow: hidden;
+	width: 20%;
+	text-align: center;
+	height:38px;
+	padding:6px 12px;
+	border: 1px solid #ced4da;
+}
+.cp_ipselect select {
+	width: 100%;
+	padding-right: 1em;
+	cursor: pointer;
+	text-indent: 0.01px;
+	text-overflow: ellipsis;
+	border: none;
+	outline: none;
+	background: transparent;
+	background-image: none;
+	box-shadow: none;
+	-webkit-appearance: none;
+	appearance: none;
+}
+.cp_ipselect select::-ms-expand {
+    display: none;
+}
+.cp_ipselect.cp_sl01 {
+	position: relative;
+	border: 1px solid #bbbbbb;
+	border-radius: 2px;
+	background: #ffffff;
+}
+.cp_ipselect.cp_sl01::before {
+	position: absolute;
+	top: 0.8em;
+	right: 0.9em;
+	width: 0;
+	height: 0;
+	padding: 0;
+	content: '';
+	border-left: 6px solid transparent;
+	border-right: 6px solid transparent;
+	border-top: 6px solid #666666;
+	pointer-events: none;
+}
+.cp_ipselect.cp_sl01 select {
+	padding: 8px 38px 8px 8px;
+	color: #666666;
+}
+
+nav {
+	margin-top:20px;
+}
+
+#empty-error {
+	display:none;
+}

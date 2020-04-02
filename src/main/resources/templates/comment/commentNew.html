@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" media="all" th:href="@{/css/style.css}" />
+<link rel="stylesheet" media="all"
+	th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}" />
+<link href="/css/boards.css" th:href="@{/css/boards.css}"
+	rel="stylesheet"></link>
+<head>
+<meta charset="UTF-8">
+<title>投稿ページ</title>
+</head>
+<body>
+	<header class="p-header my-3">
+		<div class="p-header-container">
+			<nav class="navbar navbar-light justify-content-between">
+				<div th:text="${board.name}">ポケモン育成論掲示板</div>
+				<a href="/loginForm"
+					class="btn btn-info btn-xs pull-right mx-5　navbar-brand">ログイン</a>
+			</nav>
+		</div>
+	</header>
+	<div class="main">
+		<div class="container">
+			<form method="post" id="data_upload_form"
+				enctype="multipart/form-data"
+				th:action="|/boards/${board.boardId}/comments/create|">
+				<div class="form-group text-center">
+					<label>タイトル</label> <input type="text" th:object="${comment}"
+						th:name="title" class="form-control" autofocus="autofocus">
+				</div>
+				<div class="form-group text-center">
+					<label for="exampleFormControlTextarea1">本文</label>
+					<textarea th:object="${comment}" th:name="text"
+						class="form-control" id="exampleFormControlTextarea1" rows="3"
+						required="required" autofocus="autofocus"></textarea>
+					画像ファイルを選択：<input type="file" th:object="${imageForm}" id="uploadFile" name="image" class="m-2" accept="/.png,/.jpeg"/><br />
+				</div>
+				<div class="mb-3 text-center">
+				<img id="preview">
+				</div>
+				<button class="btn btn-info btn-block login" type="submit">投稿する</button>
+			</form>
+		</div>
+	</div>
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+	<script src="/js/jquery.validate.min.js"></script>
+	<script src="/vendors/formvalidation/dist/js/FormValidation.min.js"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+	<script
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+	<script src="/js/comment.js" th:src="@{/js/comment.js}"></script>
+</body>
+</html>
+

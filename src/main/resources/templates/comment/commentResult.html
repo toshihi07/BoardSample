@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" media="all" th:href="@{/css/style.css}" />
+<link rel="stylesheet" media="all"
+	th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}" />
+<link href="/css/boards.css" th:href="@{/css/boards.css}"
+	rel="stylesheet"></link>
+<head>
+<meta charset="UTF-8" />
+<title>commentResult.html</title>
+</head>
+<body>
+	<header class="p-header my-3">
+		<div class="p-header-container">
+			<nav class="navbar navbar-light justify-content-between">
+				<div th:text="${board.name}">ポケモン交換掲示板</div>
+				<form role="form" id="logout" th:action="@{/logout}" method="post">
+					<button class="btn btn-info btn-xs pull-right mx-5　navbar-brand"
+						type="submit">ログアウト</button>
+				</form>
+			</nav>
+		</div>
+	</header>
+	<div class="main">
+		<div class="container">
+			<p>投稿しました</p>
+			<p th:text="'タイトル:' + ${comment.title}">タイトル</p>
+			<p th:text="'本文:' + ${comment.text}">本文</p>
+			<div th:if="${base64 != null}">
+				画像:<img th:src="${base64image}" />
+			</div>
+			<div class="text-center">
+			<a th:href="|/boards/${id}|" class="btn btn-info btn-xs my-3 pull-right">コメント一覧へ</a>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript"
+		th:src="@{/webjars/jquery/1.12.4/jquery.min.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/webjars/bootstrap/3.4.1/js/bootstrap.min.js}"></script>
+</body>
+</html>

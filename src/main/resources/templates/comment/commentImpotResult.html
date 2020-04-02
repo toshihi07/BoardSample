@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" media="all" th:href="@{/css/style.css}" />
+<link rel="stylesheet" media="all"
+	th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}" />
+<link href="/css/boards.css" th:href="@{/css/boards.css}"
+	rel="stylesheet"></link>
+<head>
+<meta charset="UTF-8">
+<title>掲示板個別ページ</title>
+</head>
+<body>
+	<header class="p-header my-3">
+		<div class="p-header-container">
+			<nav class="navbar navbar-light justify-content-between">
+				<div>以下の内容を登録しました</div>
+				<form role="form" id="logout" th:action="@{/logout}" method="post">
+					<button class="btn btn-info btn-xs pull-right mx-5　navbar-brand"
+						type="submit">ログアウト</button>
+				</form>
+			</nav>
+		</div>
+	</header>
+	<div class="main">
+		<div class="comment-container">
+			<div class="comment-index">
+				<div th:each="comment:${comments}" th:object="${comment}"
+					class="comment-contents">
+					<span th:text="${commentStat.count} + '.'">1</span> <span
+						th:text="${comment.user.username}">サトシ</span>
+					<div>
+						<div th:text="'タイトル:' + ${comment.title}" class="my-2">ピカチュウ</div>
+					</div>
+					<div th:text="${comment.text}" class="mb-2">交換</div>
+				</div>
+			</div>
+
+		</div>
+					<div class="text-center">
+				<a th:href="|/boards/${id}|"
+					class="btn btn-info btn-xs my-3 pull-right">コメント一覧へ</a>
+			</div>
+	</div>
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+	<script
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+	<script src="/js/comment.js" th:src="@{/js/comment.js}"></script>
+</body>
+</html>
+

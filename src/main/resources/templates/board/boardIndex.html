@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" media="all" th:href="@{/css/style.css}" />
+<link rel="stylesheet" media="all"
+	th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}" />
+<link href="/css/boards.css" th:href="@{/css/boards.css}"
+	rel="stylesheet"></link>
+<script src="/js/boards.js" th:src="@{/js/boards.js}"></script>
+<head>
+<meta charset="UTF-8">
+<title>掲示板一覧</title>
+</head>
+<body>
+	<header class="p-header my-3">
+		<div class="p-header-container">
+			<nav class="navbar navbar-light justify-content-between">
+				<div sec:authorize="authenticated">
+					ようこそ<span sec:authentication="principal.username">ゲスト</span>さん!
+				</div>
+			<form class="form-inline" action="/boards/search" method="get">
+					<input class="form-control mr-sm-2" type="search" name="name"
+						placeholder="キーワード検索" aria-label="Search">
+					<button class="btn btn-outline-info my-2 my-sm-0" type="submit">検索</button>
+				</form>
+				<div>
+					<a href="/boards/new" class="btn btn-info btn-xs pull-right">新規作成</a>
+				</div>
+								<a href="/loginForm"
+					class="btn btn-info btn-xs pull-right mx-5　navbar-brand">ログイン</a>
+			<div sec:authorize="authenticated">
+				<form role="form" id="logout" th:action="@{/logout}" method="post">
+					<button class="btn btn-info btn-xs pull-right mx-5　navbar-brand"
+						type="submit">ログアウト</button>
+						</form>
+				</div>
+			</nav>
+		</div>
+	</header>
+	<div class="main">
+		<div class="container">
+			<table class="table table-striped my-5 border-dark">
+				<thead>
+					<tr>
+						<th scope="col">No.</th>
+						<th scope="col">スレッド名</th>
+						<th scope="col">掲示板作成者</th>
+						<th scope="col">掲示板作成日</th>
+						<th scope="col">最終投稿日時</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="board:${boards}">
+						<td th:text="${boardStat.count}" scope="row">1</td>
+						<td><a
+							th:href="@{/boards/{board_id}(board_id=${board.boardId})}"
+							th:text="${{board.name}}" th:method="get">ポケモン</a></td>
+						<td th:text="${{board.user.username}}">サトシ</td>
+						<td th:text="${{board.created_at}}"></td>
+						<td>2020年2月25日</td>
+					</tr>
+				</tbody>
+			</table>
+			
+<div th:fragment='paginationbar'>
+            <ul>
+                <li th:class="${page.first} ? 'disabled':''" style="display:inline">
+                    <span th:if="${page.first}">←先頭</span>
+                    <a th:if="${not page.first}" th:href="@{${url}(page=0)}">←先頭</a>
+                </li>
+                <li th:each='i : ${#numbers.sequence(0, page.totalPages-1)}' th:class="(${i}==${page.number})? 'active' : ''" style="display:inline">
+                    <span th:if='${i}==${page.number}' th:text='${i+1}'>1</span>
+                    <a th:if='${i}!=${page.number}' th:href="@{${url}(page=${i})}">
+                        <span th:text='${i+1}'>1</span>
+                    </a>
+                </li>
+                <li th:class="${page.last} ? 'disabled':''" style="display:inline">
+                    <span th:if="${page.last}">末尾➝</span>
+                    <a th:if="${not page.last}" th:href="@{${url}(page=(${page.totalPages}-1))}">末尾➝</a>
+                </li>
+            </ul>
+        </div>
+        
+		</div>
+	</div>
+	<script type="text/javascript"
+		th:src="@{/webjars/jquery/1.12.4/jquery.min.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/webjars/bootstrap/3.4.1/js/bootstrap.min.js}"></script>
+</body>
+</html>
+

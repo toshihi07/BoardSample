@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" media="all" th:href="@{/css/style.css}" />
+<link rel="stylesheet" media="all"
+	th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}" />
+<head>
+<meta charset="UTF-8">
+<title>検索結果一覧</title>
+</head>
+<body>
+	<div class="container d-flex align-items-center mt-5">
+		<div sec:authorize="isAuthenticated()">
+			<span th:text="${boardName}">ポケモン育成論掲示板</span>
+			<nav class="navbar navbar-light bg-light">
+				<form th:action="|/boards/${board_id}/comments/searchTitle|" method="get"
+					class="form-inline">
+					<input name="title" class="form-control mr-sm-2" type="search"
+						placeholder="タイトルからキーワード検索" aria-label="Search">
+					<button class="btn btn-outline-success my-2 my-sm-0" type="submit">検索</button>
+				</form>
+				<form th:action="|/boards/${board_id}/comments/searchText|" method="get"
+					class="form-inline">
+					<input name="text" class="form-control mr-sm-2" type="search"
+						placeholder="本文からキーワード検索" aria-label="Search">
+					<button class="btn btn-outline-success my-2 my-sm-0" type="submit">検索</button>
+				</form>
+			</nav>
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th scope="col">No.</th>
+						<th scope="col">タイトル</th>
+						<th scope="col">本文</th>
+						<th scope="col">投稿者</th>
+						<th scope="col">投稿日時</th>
+						<th></th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="comment, i:${comments}" th:object="${comment}">
+						<td th:text="${i.count}" scope="row">1</td>
+						<td th:text="*{title}">ピカチュウ育成論</td>
+						<td th:text="*{text}">ありがとう！</td>
+						<td th:text="*{username}">サトシ</td>
+						<td th:text="*{created_at}">2020年2月22日</td>
+						<td><a class="btn btn-default btn-xs"
+							th:href="|/boards/${board_id}/comments/*{comment_id}/edit|">編集</a></td>
+						<td>
+							<form th:action="|/boards/${board_id}/comments/*{comment_id}|"
+								method="POST">
+								<button class="btn btn-default btn-xs">削除</button>
+							</form>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<div>
+				<a th:href="|${board_id}/comments/new|"><button
+						class="btn btn-info btn-block login" type="submit">投稿する</button></a>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript"
+		th:src="@{/webjars/jquery/1.12.4/jquery.min.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/webjars/bootstrap/3.4.1/js/bootstrap.min.js}"></script>
+</body>
+</html>
+
