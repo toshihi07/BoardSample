@@ -25,7 +25,7 @@ public class BoardService {
 	
 	
 	public Page<Board> findAll(Pageable pageable) {
-	    Page<Board> page = boardRepository.findAll(pageable);
+	    Page<Board> page = boardRepository.findAllOrderByBoardIdDesc(pageable);
 		return page;
 	}
 	
@@ -41,6 +41,6 @@ public class BoardService {
 	
 	@Transactional
     public Page<Board> findByBoardNameLike(String name,Pageable pageable) {
-        return boardRepository.findByBoardNameLike(name,pageable);
+		return boardRepository.findByBoardNameLike(name,pageable);
     }
 }

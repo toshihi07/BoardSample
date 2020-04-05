@@ -5,56 +5,186 @@
 <link rel="stylesheet" media="all" th:href="@{/css/style.css}" />
 <link rel="stylesheet" media="all"
 	th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}" />
+<link href="/css/boards.css" th:href="@{/css/boards.css}"
+	rel="stylesheet"></link>
 <head>
 <meta charset="UTF-8">
-<title>検索結果一覧</title>
+<title>掲示板個別ページ</title>
 </head>
 <body>
-	<div class="container d-flex align-items-center mt-5">
-		<div sec:authorize="isAuthenticated()">
-			ようこそ<span th:sec="${principal.username}">ゲスト</span>さん!
-			<nav class="navbar navbar-light bg-light">
-				<form action="/boards/search" method="get" class="form-inline" >
-					<input name = "name" class="form-control mr-sm-2" type="search"
+	<header class="p-header my-3">
+		<div class="p-header-container">
+			<nav class="navbar navbar-light justify-content-between">
+				<div sec:authorize="authenticated">
+					<span sec:authentication="principal.username">ゲスト</span>さん
+				</div>
+
+				<div th:text="${SearchType + comments_size + '件'}">キーワード検索結果:10件</div>
+				<select class="search cp_ipselect cp_sl01">
+					<option value="キーワード" selected>キーワード検索</option>
+					<option value="タイトル">タイトルから検索</option>
+					<option value="本文">本文から検索</option>
+				</select>
+
+				<form th:action="|/boards/${board_id}/comments/searchWord|"
+					method="get" class="form-inline wordsearch">
+					<input name="word" class="form-control mr-sm-2" type="search"
 						placeholder="キーワード検索" aria-label="Search">
-					<button class="btn btn-outline-success my-2 my-sm-0" type="submit">検索</button>
+					<button class="btn btn-outline-info my-2 my-sm-0" type="submit">検索</button>
 				</form>
+
+				<form th:action="|/boards/${board_id}/comments/searchTitle|"
+					method="get" class="form-inline titlesearch">
+					<input name="title" class="form-control mr-sm-2" type="search"
+						placeholder="タイトルから検索" aria-label="Search">
+					<button class="btn btn-outline-info my-2 my-sm-0" type="submit">検索</button>
+				</form>
+
+				<form th:action="|/boards/${board_id}/comments/searchText|"
+					method="get" class="form-inline textsearch">
+					<input name="text" class="form-control mr-sm-2" type="search"
+						placeholder="本文から検索" aria-label="Search">
+					<button class="btn btn-outline-info my-2 my-sm-0" type="submit">検索</button>
+				</form>
+
+				<a href="/loginform"
+					class="btn btn-info btn-xs pull-right mx-5　navbar-brand">ログイン</a>
+					
+								<div sec:authorize="authenticated">
+				<form role="form" id="logout" th:action="@{/logout}" method="post">
+					<button class="btn btn-info btn-xs pull-right mx-5　navbar-brand"
+						type="submit">ログアウト</button>
+						</form>
+				</div>
 			</nav>
-			<table class="table table-striped">
-				<thead>
-					<tr>
-						<th scope="col">No.</th>
-						<th scope="col">スレッド名</th>
-						<th scope="col">掲示板作成者</th>
-						<th scope="col">掲示板作成日</th>
-						<th scope="col">最終投稿日時</th>
-						<!-- 					<th></th>
- -->
-					</tr>
-				</thead>
-				<tbody>
-					<tr th:each="board:${boards}" th:object="${board}">
-						<td th:text="*{board_id}" scope="row">1</td>
-						<td><a
-							th:href="@{/boards/{board_id}(board_id=${board.board_id})}"
-							th:text="*{name}" th:method="get">ポケモン</a></td>
-						<td th:text="*{username}">サトシ</td>
-						<td th:text="*{created_at}"></td>
-						<td>2020年2月25日</td>
-						<!-- 					<td><a class="btn btn-default btn-xs"
-						th:href="@{/boards/{id}(id=*{id})}">詳細</a></td> -->
-					</tr>
-				</tbody>
-			</table>
-			<div>
-				<a href="/boards/index" class="btn btn-default btn-xs pull-right">戻る</a>
+
+		</div>
+	</header>
+	<div class="main">
+		<div class="comment-container">
+			<div class="comment-index">
+				<div th:each="comment:${comments}" th:object="${comment}"
+					class="comment-contents">
+					<span th:text="${comment.commentId} + '.'">1</span> <span
+						th:text="${comment.user.username}">サトシ</span> <span
+						th:text="${comment.created_at}">2020年3月20日</span>
+					<div>
+						<a th:text="'タイトル:' + ${comment.title}"
+							th:href="|/boards/${board_id}/comments/*{commentId}|"
+							class="my-2">ピカチュウ</a>
+					</div>
+					<div th:text="${comment.text}" class="mb-2">交換</div>
+					<div
+						class="content-footer d-flex justify-content-end flex-row bd-highlight">
+						<div th:if="${comment.image != '' AND comment.image != NULL}"
+							th:text="画像あり" style="line-height: 33px;"></div>
+						<a th:if="${comment.user.userId == loginUser_id}"
+							class="btn btn-info edit-btn"
+							th:href="|/boards/${board_id}/comments/*{commentId}/edit|">編集</a>
+						<form th:if="${comment.user.userId == loginUser_id}"
+							th:action="|/boards/${board_id}/comments/*{commentId}|"
+							method="POST">
+							<button class="btn btn-info edit-btn">削除</button>
+						</form>
+					</div>
+				</div>
 			</div>
 		</div>
+
+		<div class="post-open">
+			<button class="btn btn-info btn-block login open-button"
+				type="submit" style="margin-top: 10px;">投稿する</button>
+		</div>
+
+			<form class="comment-form d-none"method="post" id="data_upload_form"
+				enctype="multipart/form-data"
+				th:action="|/boards/${board.boardId}/comments/create|" style="width:40%; margin:10px auto;">
+				<div class="form-group text-center">
+					<label>タイトル</label> <input type="text" th:object="${comment}"
+						th:name="title" class="form-control" autofocus="autofocus">
+				</div>
+				<div class="form-group text-center">
+					<label for="exampleFormControlTextarea1">本文</label>
+					<textarea th:object="${comment}" th:name="text"
+						class="form-control" id="exampleFormControlTextarea1" rows="3"
+						required="required" autofocus="autofocus" style="margin-bottom:10px;"></textarea>
+					画像ファイルを選択：<input type="file" th:object="${imageForm}"
+						id="uploadFile" name="image" class="m-2" accept="/.png,/.jpeg" /><br />
+				</div>
+				<div class="mb-3 text-center">
+					<img id="preview">
+				</div>
+				<button id="new_comment" class="btn btn-info btn-block login" type="submit">投稿する</button>
+			</form>
+
+		<div>
+			<form th:action="|/boards/${board_id}/comments/download|"
+				method="post">
+				<button class="btn btn-success btn-block login" type="submit"
+					style="margin-top: 10px;">この掲示板をダウンロード</button>
+			</form>
+		</div>
+
+		<div>
+			<form class="upload-form" id="upload-form" method="post"
+				style="margin-top: 10px;"
+				th:action="|/boards/${board_id}/comments/upload|"
+				enctype="multipart/form-data">
+				<input type="submit" id="input-form" value="ファイルをアップロード"
+					accept=".xls,.xlsx"> <input type="file" name="upload_file"
+					required>
+			</form>
+			<div id="empty-error">
+				<p>
+					<font color="red">アップロードするファイルが選択されていません</font>
+				</p>
+			</div>
+		</div>
+
+		<div th:fragment='paginationbar'>
+			<ul class='pagination justify-content-center'>
+				<li th:class="${page.firstPage}?'disabled':''"
+					style="display: inline"><span th:if='${page.firstPage}'>←先頭</span>
+					<a th:if='${not page.firstPage}'
+					th:href='@{${page.url}(page=0,size=${page.size})}'>←先頭</a></li>
+				<li th:class="${page.hasPreviousPage}? '' : 'disabled'"
+					style="display: inline"><span
+					th:if='${not page.hasPreviousPage}'>«</span> <a
+					th:if='${page.hasPreviousPage}'
+					th:href='@{${page.url}(page=${page.number-2},size=${page.size})}'>«</a>
+				</li>
+
+
+				<li th:each='item : ${page.items}'
+					th:class="${item.current}? 'active' : ''" style="display: inline">
+					<span th:if='${item.current}' th:text='${item.number}'>1</span> <a
+					th:if='${not item.current}'
+					th:href='@{${page.url}(page=${item.number-1},size=${page.size})}'>
+						<span th:text='${item.number}'>1</span>
+				</a>
+				</li>
+				<li th:class="${page.hasNextPage}? '' : 'disabled'"
+					style="display: inline"><span th:if='${not page.hasNextPage}'>»</span>
+					<a th:if='${page.hasNextPage}'
+					th:href='@{${page.url}(page=${page.number},size=${page.size})}'>»</a>
+				</li>
+				<li th:class="${page.lastPage}? 'disabled' : ''"
+					style="display: inline"><span th:if='${page.lastPage}'>末尾➝</span>
+					<a th:if='${not page.lastPage}'
+					th:href='@{${page.url}(page=${page.totalPages - 1},size=${page.size})}'>末尾➝</a>
+				</li>
+			</ul>
+		</div>
+
 	</div>
-	<script type="text/javascript"
-		th:src="@{/webjars/jquery/1.12.4/jquery.min.js}"></script>
-	<script type="text/javascript"
-		th:src="@{/webjars/bootstrap/3.4.1/js/bootstrap.min.js}"></script>
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+	<script src="/js/jquery.validate.min.js"></script>
+	<script src="/vendors/formvalidation/dist/js/FormValidation.min.js"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+	<script
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+	<script src="/js/comment.js" th:src="@{/js/comment.js}"></script>
 </body>
 </html>
 

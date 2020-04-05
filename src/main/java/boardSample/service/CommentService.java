@@ -24,8 +24,8 @@ public class CommentService {
 		return comments;
 	}
 	
-	public Page<Comment> findAll(int board_id,Pageable pageable) {
-		Page<Comment> comments = commentRepository.findByBoard_BoardId(board_id,pageable);
+	public Page<Comment> findAll(Board board,Pageable pageable) {
+		Page<Comment> comments = commentRepository.findByBoard(board,pageable);
 		return comments;
 	}
 
@@ -49,6 +49,10 @@ public class CommentService {
     public Page<Comment> findByWordLike(String word,Board board,Pageable pageable) {
         return commentRepository.findByWordLike(word,board,pageable);
     }
+	@Transactional
+    public List<Comment> findByWordLike(String word,Board board) {
+        return commentRepository.findByWordLike(word,board);
+    }
 	
 	@Transactional
     public Page<Comment> findByTitleLike(String title,Board board,Pageable pageable) {
@@ -56,8 +60,18 @@ public class CommentService {
     }
 	
 	@Transactional
+    public List<Comment> findByTitleLike(String word,Board board) {
+        return commentRepository.findByWordLike(word,board);
+    }
+	
+	@Transactional
     public Page<Comment> findByTextLike(String text,Board board,Pageable pageable) {
         return commentRepository.findByTextLike(text,board,pageable);
+    }
+	
+	@Transactional
+    public List<Comment> findByTextLike(String word,Board board) {
+        return commentRepository.findByWordLike(word,board);
     }
 	
 	

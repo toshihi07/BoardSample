@@ -15,6 +15,7 @@ import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -26,10 +27,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import boardSample.AccountUserDetails;
+import boardSample.PageWrapper;
 import boardSample.entity.Board;
 import boardSample.entity.Comment;
 import boardSample.entity.ExcelBuilder;
@@ -52,39 +56,19 @@ public class CommentController{
 	@Autowired
 	private UserService userService;
 	
+	@RequestMapping(method = RequestMethod.GET)
+	public String index() {
+		return "ajax/index";
+	}
+	
 	@GetMapping("new") 
 	public String newComment(@PathVariable ("id") int board_id,Model model) {
 		Board board = boardService.getBoard(board_id);
 		model.addAttribute("board",board);
 		return "comment/commentNew";
 	}
-
+	
 	@PostMapping("create") 
-	public String create(@PathVariable ("id") int board_id, @ModelAttribute Comment comment,BindingResult result1,Model model,@ModelAttribute ImageForm imageForm,BindingResult result2) throws Exception {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        AccountUserDetails subject = (AccountUserDetails) auth.getPrincipal();
-        User user = subject.getUser();
-	    comment.setUser(user);
-
-		model.addAttribute("comments",commentService.findAll(board_id));
-		//formから送られてきた画像を保存サイズの出力。
-	    System.out.println(imageForm.getImage());
-	    //StringBufferクラスをnewする。StringBufferクラスは、Stringと違って文字列操作が可能。
-		StringBuffer data = new StringBuffer();
-		String base64 = new String(Base64.encodeBase64(imageForm.getImage().getBytes()),"ASCII");
-	    comment.setImage(base64);
-	    data.append("data:image/jpeg;base64,");
-	    data.append(base64);
-	    model.addAttribute("base64",base64);
-	    model.addAttribute("base64image",data.toString());
-		model.addAttribute("comment",comment);
-		Board board = boardService.getBoard(board_id);
-		comment.setBoard(board);
-		model.addAttribute("board",board);
-		commentService.save(comment);
-//	    String sId = String.valueOf(board_id);
-	    return "/comment/commentResult";
-	}
 	
 	@GetMapping("{comment_id}/edit")
 	public String edit(@PathVariable int comment_id, Model model) {
@@ -154,18 +138,32 @@ public class CommentController{
 	
 	@GetMapping("searchWord")
 	public String searchWord(@PathVariable ("id") int board_id,@RequestParam String word,Model model,ModelMap modelMap,Pageable pageable) {
+ 		Board board = boardService.getBoard(board_id);
+	    Page<Comment> commentPages = commentService.findByWordLike(word,board,pageable);
+        PageWrapper<Comment> page = new PageWrapper<Comment>(commentPages,"/boards/{id}");
+	    model.addAttribute("page", page);
+        model.addAttribute("comments", page.getContent());
+        
+        //検索結果件数
+        List<Comment> Comment_list = commentService.findByTitleLike(word, board);
+        int comments_size = Comment_list.size();
+        if (comments_size == 0) {
+        	 comments_size = 0;
+        }
+        String SearchType = "キーワード検索結果:";
+        model.addAttribute("SearchType",SearchType);
+        model.addAttribute("comments_size",comments_size);
+        
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         AccountUserDetails subject = (AccountUserDetails) auth.getPrincipal();
         User user = subject.getUser();
         int user_id = user.getUserId();
  		model.addAttribute("loginUser_id", user_id);
- 		Board board = boardService.getBoard(board_id);
-		Page<Comment> comments = commentService.findByWordLike(word, board, pageable);
+ 		
 		model.addAttribute("board", board);
 		model.addAttribute("boardName", board.getName());
-		model.addAttribute("comments",comments);
 		model.addAttribute("board_id",board_id);
-		return "board/boardShow";
+		return "board/boardSearch";
 	}
 	
 	@GetMapping("searchTitle")
@@ -181,7 +179,16 @@ public class CommentController{
 		model.addAttribute("boardName", board.getName());
 		model.addAttribute("comments",comments);
 		model.addAttribute("board_id",board_id);
-		return "board/boardShow";
+        //検索結果件数
+        List<Comment> Comment_list = commentService.findByTitleLike(title, board);
+        int comments_size = Comment_list.size();
+        if (comments_size == 0) {
+        	 comments_size = 0;
+        }
+        String SearchType = "タイトル検索結果:";
+        model.addAttribute("SearchType",SearchType);
+        model.addAttribute("comments_size",comments_size);
+		return "board/boardSearch";
 	}
 	
 	@GetMapping("searchText")
@@ -197,7 +204,16 @@ public class CommentController{
 		model.addAttribute("boardName", board.getName());
 		model.addAttribute("comments",comments);
 		model.addAttribute("board_id",board_id);
-		return "board/boardShow";
+        //検索結果件数
+        List<Comment> Comment_list = commentService.findByTextLike(text, board);
+        int comments_size = Comment_list.size();
+        if (comments_size == 0) {
+        	 comments_size = 0;
+        }
+        String SearchType = "テキスト検索結果:";
+        model.addAttribute("SearchType",SearchType);
+        model.addAttribute("comments_size",comments_size);
+		return "board/boardSearch";
 	}
 	//エクセルファイルダウンロード
 	@PostMapping("/download")

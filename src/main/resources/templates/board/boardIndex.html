@@ -29,12 +29,14 @@
 				</div>
 								<a href="/loginForm"
 					class="btn btn-info btn-xs pull-right mx-5　navbar-brand">ログイン</a>
+					
 			<div sec:authorize="authenticated">
 				<form role="form" id="logout" th:action="@{/logout}" method="post">
 					<button class="btn btn-info btn-xs pull-right mx-5　navbar-brand"
 						type="submit">ログアウト</button>
 						</form>
 				</div>
+				
 			</nav>
 		</div>
 	</header>
@@ -44,7 +46,7 @@
 				<thead>
 					<tr>
 						<th scope="col">No.</th>
-						<th scope="col">スレッド名</th>
+						<th scope="col">スレッド名(投稿件数)</th>
 						<th scope="col">掲示板作成者</th>
 						<th scope="col">掲示板作成日</th>
 						<th scope="col">最終投稿日時</th>
@@ -52,7 +54,7 @@
 				</thead>
 				<tbody>
 					<tr th:each="board:${boards}">
-						<td th:text="${boardStat.count}" scope="row">1</td>
+						<td th:text="${board.boardId}" scope="row">1</td>
 						<td><a
 							th:href="@{/boards/{board_id}(board_id=${board.boardId})}"
 							th:text="${{board.name}}" th:method="get">ポケモン</a></td>
@@ -63,21 +65,31 @@
 				</tbody>
 			</table>
 			
-<div th:fragment='paginationbar'>
-            <ul>
-                <li th:class="${page.first} ? 'disabled':''" style="display:inline">
-                    <span th:if="${page.first}">←先頭</span>
-                    <a th:if="${not page.first}" th:href="@{${url}(page=0)}">←先頭</a>
+        <div th:fragment='paginationbar'>
+            <ul class='pagination justify-content-center'>
+                <li th:class="${page.firstPage}?'disabled':''" style="display:inline">
+                    <span th:if='${page.firstPage}'>先頭</span>
+                    <a th:if='${not page.firstPage}' th:href='@{${page.url}(page=0,size=${page.size})}'>先頭</a>
                 </li>
-                <li th:each='i : ${#numbers.sequence(0, page.totalPages-1)}' th:class="(${i}==${page.number})? 'active' : ''" style="display:inline">
-                    <span th:if='${i}==${page.number}' th:text='${i+1}'>1</span>
-                    <a th:if='${i}!=${page.number}' th:href="@{${url}(page=${i})}">
-                        <span th:text='${i+1}'>1</span>
+                <li th:class="${page.hasPreviousPage}? '' : 'disabled'" style="display:inline">
+                    <span th:if='${not page.hasPreviousPage}'></span>
+                    <a th:if='${page.hasPreviousPage}' th:href='@{${page.url}(page=${page.number-2},size=${page.size})}'>«</a>
+                </li>
+
+
+                <li th:each='item : ${page.items}' th:class="${item.current}? 'active' : ''" style="display:inline">
+                    <span th:if='${item.current}' th:text='${item.number}'>1</span>
+                    <a th:if='${not item.current}' th:href='@{${page.url}(page=${item.number-1},size=${page.size})}'>
+                    <span th:text='${item.number}'>1</span>
                     </a>
                 </li>
-                <li th:class="${page.last} ? 'disabled':''" style="display:inline">
-                    <span th:if="${page.last}">末尾➝</span>
-                    <a th:if="${not page.last}" th:href="@{${url}(page=(${page.totalPages}-1))}">末尾➝</a>
+                <li th:class="${page.hasNextPage}? '' : 'disabled'" style="display:inline">
+                    <span th:if='${not page.hasNextPage}'>»</span>
+                    <a th:if='${page.hasNextPage}' th:href='@{${page.url}(page=${page.number},size=${page.size})}'>»</a>
+                </li>
+                <li th:class="${page.lastPage}? 'disabled' : ''" style="display:inline">
+                    <span th:if='${page.lastPage}'>末尾</span>
+                    <a th:if='${not page.lastPage}' th:href='@{${page.url}(page=${page.totalPages - 1},size=${page.size})}'>末尾</a>
                 </li>
             </ul>
         </div>

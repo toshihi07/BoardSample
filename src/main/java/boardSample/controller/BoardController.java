@@ -42,10 +42,9 @@ public class BoardController {
 	@GetMapping
 	public String index(Pageable pageable,Model model,ModelMap modelMap) {
 	    Page<Board> boardPages = boardService.findAll(pageable);
-	    pageable = PageRequest.of(0, 10);
-	    model.addAttribute("page", boardPages);
-        model.addAttribute("boards", boardPages.getContent());
-        model.addAttribute("url", "/board/boardIndex");
+        PageWrapper<Board> page = new PageWrapper<Board>(boardPages, "/");
+	    model.addAttribute("page", page);
+        model.addAttribute("boards", page.getContent());
 		return "/board/boardIndex";
 	    }
 	
@@ -67,19 +66,27 @@ public class BoardController {
 	@GetMapping("/boards/{id}")
 	public String show(@PathVariable int id, Model model,Pageable pageable) {
 		//page処理
-		pageable = PageRequest.of(0, 10);
-	    Page<Comment> commentPages = commentService.findAll(id,pageable);
-        PageWrapper<Comment> page = new PageWrapper<Comment>(commentPages,"/board/boardShow");
+		Board board = boardService.getBoard(id);
+	    Page<Comment> commentPages = commentService.findAll(board,pageable);
+        PageWrapper<Comment> page = new PageWrapper<Comment>(commentPages,"/boards/{id}");
 	    model.addAttribute("page", page);
         model.addAttribute("comments", page.getContent());
-        model.addAttribute("url", "/board/boardShow");
-      
+        
+        List<Comment> Comment_list = commentService.findAll(id);
+        int comments_size = Comment_list.size();
+        
+        if (comments_size == 0) {
+        	 comments_size = 0;
+        }
+        
+        model.addAttribute("comments_size",comments_size);
+        
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         AccountUserDetails subject = (AccountUserDetails) auth.getPrincipal();
         User user = subject.getUser();
         int user_id = user.getUserId();
  		model.addAttribute("loginUser_id", user_id);
-		Board board = boardService.getBoard(id);
  		model.addAttribute("board", board);
 		model.addAttribute("boardName", board.getName());		
 		model.addAttribute("board_id",id);
@@ -88,11 +95,10 @@ public class BoardController {
 	
 	@GetMapping("/boards/search")
 	public String boardSearch(@RequestParam String name,Model model,Pageable pageable) {
-	    pageable = PageRequest.of(0, 10);
 		Page<Board> boardPages = boardService.findByBoardNameLike(name,pageable);
-	    model.addAttribute("page", boardPages);
-        model.addAttribute("boards", boardPages.getContent());
-        model.addAttribute("url", "/board/boardIndex");
+        PageWrapper<Board> page = new PageWrapper<Board>(boardPages, "/");
+	    model.addAttribute("page", page);
+        model.addAttribute("boards", page.getContent());
 		return "/board/boardIndex";
 	}
 

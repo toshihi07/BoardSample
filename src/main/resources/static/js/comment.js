@@ -24,5 +24,28 @@ window.addEventListener('DOMContentLoaded', function(){
 		    }
 		    reader.readAsDataURL(e.target.files[0]);
 		});
+	  
+	  //コメント投稿フォームを開く
+	    $('.open-button').on('click', function(){
+	    $('.post-open').addClass("d-none");
+	    $('.comment-form').removeClass("d-none");
+	  })
+	  
+	  
+
+	    //コメントの送信
+	    $('#data_upload_form').on('submit', function(e){
+	        e.preventDefault();
+	        var formData = new FormData(this);
+	        var url = '/boards/4/comments/create';
+	        $.ajax({
+	          url: url,
+	          type: "POST",
+	          data: formData,
+	          dataType: 'json',
+	          processData: false,
+	          contentType: false
+	        })
+	      })
 });
 

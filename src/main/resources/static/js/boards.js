@@ -1,4 +1,4 @@
-$(function(){
+$(function () {
 	  // セレクトボックスが切り替わったら発動
 	  $('.search').change(function()  {
 		  var search_val = $('.search').val();
@@ -24,14 +24,6 @@ $(function(){
 	  function updateImageDisplay() {
 		  while(preview.firstChild) {
 		    preview.removeChild(preview.firstChild);
-		  }
-
-		  var curFiles = input.files;
-		  if(curFiles.length === 0) {
-		    var para = document.createElement('p');
-		    para.textContent = 'アップロードするファイルが選択されていません';
-		    preview.appendChild(para);
-		  } 
-		 
+		  }		 
 		  
 });

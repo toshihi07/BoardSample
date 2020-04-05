@@ -12,8 +12,10 @@ import boardSample.entity.Board;
 
 @Repository
 public interface BoardRepository extends JpaRepository<Board,Integer>{
-	@Query("SELECT b FROM Board b WHERE b.name LIKE %:name%")
+	@Query("SELECT b FROM Board b WHERE b.name LIKE %:name% order by b.id desc")
 	Page<Board> findByBoardNameLike(@Param("name") String name,Pageable pageble);
+	@Query("SELECT b FROM Board b order by b.id desc")
+	Page<Board> findAllOrderByBoardIdDesc(Pageable pageble);
 		}
 
  
