@@ -4,7 +4,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.validation.Valid;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -15,6 +21,7 @@ import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,13 +33,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.sun.xml.bind.v2.runtime.unmarshaller.Intercepter;
+
 import boardSample.AccountUserDetails;
+import boardSample.Interceptor;
 import boardSample.PageWrapper;
 import boardSample.entity.Board;
 import boardSample.entity.Comment;
@@ -56,6 +68,9 @@ public class CommentController{
 	@Autowired
 	private UserService userService;
 	
+	@Autowired
+	private Interceptor intercepter;
+	
 	@RequestMapping(method = RequestMethod.GET)
 	public String index() {
 		return "ajax/index";
@@ -68,8 +83,54 @@ public class CommentController{
 		return "comment/commentNew";
 	}
 	
-	@PostMapping("create") 
-	
+	@PostMapping(value = "create") 
+	@ResponseBody
+	public Map create(@PathVariable ("id") int board_id,@RequestParam("title") String title,@RequestParam("text") String text,@RequestParam("image") MultipartFile image
+) throws Exception {
+		Board board = boardService.getBoard(board_id);
+		Comment comment = new Comment();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        AccountUserDetails subject = (AccountUserDetails) auth.getPrincipal();
+        User user = subject.getUser();
+        comment.setBoard(board);
+		comment.setText(text);
+		comment.setTitle(title);
+		comment.setUser(user);
+		//formから送られてきた画像を保存サイズの出力。
+	    //StringBufferクラスをnewする。StringBufferクラスは、Stringと違って文字列操作が可能。
+		String base64 = new String(Base64.encodeBase64(image.getBytes()),"ASCII");
+	    comment.setImage(base64);
+		commentService.save(comment);
+		//コメント件数と最新投稿日時の更新
+		int commentsSize = commentService.findByBoard_BoardId(board_id);
+		board.setComments_size(commentsSize);
+		Date LastCommentDate = new Date();
+		board.setLast_comment_date(LastCommentDate);
+		boardService.save(board);
+		
+		Map<String, String> res = new HashMap<>();
+		String commentId = String.valueOf(comment.getCommentId());
+		String boardId = String.valueOf(comment.getBoard().getBoardId());
+		String createdAt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(comment.getCreated_at());
+		String imageText = "画像あり";
+		if (comment.getImage() == "") {
+			imageText = "画像なし";
+		} 
+		String boardName = board.getName();
+        int comments_size = commentService.findByBoard_BoardId(board_id);
+        String comments_size1 = String.valueOf(comments_size);
+		res.put("username", comment.getUser().getUsername());
+		res.put("commentId", commentId);
+		res.put("boardId", boardId);
+		res.put("title",comment.getTitle());
+		res.put("text", comment.getText());
+		res.put("imageText", imageText);
+		res.put("createdAt", createdAt);
+		res.put("boardName",boardName);
+		res.put("commentsSize",comments_size1);
+		return res;
+	}
+		
 	@GetMapping("{comment_id}/edit")
 	public String edit(@PathVariable int comment_id, Model model) {
 		Comment comment = commentService.getComment(comment_id);
@@ -106,6 +167,9 @@ public class CommentController{
 	    model.addAttribute("base64image",data.toString());
 	    model.addAttribute("comment", comment);
 	    model.addAttribute("board_id", board_id);
+        //ログイン確認
+        Boolean login = intercepter.isUserLogged();
+        model.addAttribute("login", login);
 	    return "comment/commentShow";
 	}
 	
@@ -129,8 +193,8 @@ public class CommentController{
 	public String destroy(@PathVariable("comment_id") int comment_id,@PathVariable("id") int id) {
 		Comment comment = commentService.getComment(comment_id);
 	    commentService.delete(comment);
-	    String sId = String.valueOf(id);
 	    //文字列に変換する
+	    String sId = String.valueOf(id);
 	    return "redirect:/boards/" + sId;
 	}
 	
@@ -163,6 +227,9 @@ public class CommentController{
 		model.addAttribute("board", board);
 		model.addAttribute("boardName", board.getName());
 		model.addAttribute("board_id",board_id);
+        //ログイン確認
+        Boolean login = intercepter.isUserLogged();
+        model.addAttribute("login", login);
 		return "board/boardSearch";
 	}
 	
@@ -188,6 +255,9 @@ public class CommentController{
         String SearchType = "タイトル検索結果:";
         model.addAttribute("SearchType",SearchType);
         model.addAttribute("comments_size",comments_size);
+        //ログイン確認
+        Boolean login = intercepter.isUserLogged();
+        model.addAttribute("login", login);
 		return "board/boardSearch";
 	}
 	
@@ -213,6 +283,9 @@ public class CommentController{
         String SearchType = "テキスト検索結果:";
         model.addAttribute("SearchType",SearchType);
         model.addAttribute("comments_size",comments_size);
+        //ログイン確認
+        Boolean login = intercepter.isUserLogged();
+        model.addAttribute("login", login);
 		return "board/boardSearch";
 	}
 	//エクセルファイルダウンロード
@@ -254,7 +327,7 @@ public class CommentController{
 	    	double userIDValue = userIdCell.getNumericCellValue();
 	    	int user_id = (int)userIDValue;
 	    	Cell imageCell = row.getCell(5);
-	    	String imageValue = imageCell.getStringCellValue();
+	    	String imageValue = imageCell.getStringCellValue();	
 	    	comments[i] = new Comment(titleValue,textValue,imageValue);
 	    	Board board = boardService.getBoard(board_id);
 	    	User user = userService.getUser(user_id);

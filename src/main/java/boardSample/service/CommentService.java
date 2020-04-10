@@ -1,6 +1,7 @@
 package boardSample.service;
 
 
+import java.util.Date;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -27,6 +28,20 @@ public class CommentService {
 	public Page<Comment> findAll(Board board,Pageable pageable) {
 		Page<Comment> comments = commentRepository.findByBoard(board,pageable);
 		return comments;
+	}
+	
+	public int findByBoard_BoardId(int board_id) {
+		List<Comment> comments = commentRepository.findByBoard_BoardId(board_id);
+		int commentsSize = comments.size();
+		return commentsSize;
+	}
+	
+	public Date LastCommentDate(int board_id) {
+		List<Comment> comments = commentRepository.findByBoard_BoardId(board_id);
+		int commentsSize = comments.size();
+		Comment comment = comments.get(commentsSize);
+		Date LastCommentDate = comment.getCreated_at();
+		return LastCommentDate;
 	}
 
 	public void save(Comment comment) {

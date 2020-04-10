@@ -3,13 +3,24 @@
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="stylesheet" media="all" th:href="@{/css/style.css}" />
-<link rel="stylesheet" media="all"
-	th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}" />
+ <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 <link href="/css/boards.css" th:href="@{/css/boards.css}"
 	rel="stylesheet"></link>
 <head>
 <meta charset="UTF-8">
 <title>掲示板個別ページ</title>
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+	<script src="/js/jquery.validate.min.js"></script>
+	<script src="/vendors/formvalidation/dist/js/FormValidation.min.js"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+	<script
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+	<script src="/js/comment.js" th:src="@{/js/comment.js}"></script>
+	<script
+  src="https://code.jquery.com/jquery-3.4.1.js"
+  integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+  crossorigin="anonymous"></script>
 </head>
 <body>
 	<header class="p-header my-3">
@@ -19,7 +30,7 @@
 					<span sec:authentication="principal.username">ゲスト</span>さん
 				</div>
 
-				<div th:text="${boardName + '(' + comments_size + '件)'}">ポケモン育成論掲示板(投稿件数)</div>
+				<div class="comment-size" th:text="${boardName + '(' + comments_size + '件)'}">ポケモン育成論掲示板(投稿件数)</div>
 				<select class="search cp_ipselect cp_sl01">
 					<option value="キーワード" selected>キーワード検索</option>
 					<option value="タイトル">タイトルから検索</option>
@@ -47,20 +58,23 @@
 					<button class="btn btn-outline-info my-2 my-sm-0" type="submit">検索</button>
 				</form>
 
-				<a href="/loginform"
-					class="btn btn-info btn-xs pull-right mx-5　navbar-brand">ログイン</a>
-					
-								<div sec:authorize="authenticated">
+				<a th:unless="${login}" href="/loginForm"
+					class="btn btn-info btn-xs pull-right mx-5　navbar-brand">ログイン</a>		
+			<div sec:authorize="authenticated">
 				<form role="form" id="logout" th:action="@{/logout}" method="post">
 					<button class="btn btn-info btn-xs pull-right mx-5　navbar-brand"
 						type="submit">ログアウト</button>
 						</form>
 				</div>
+				
 			</nav>
 
 		</div>
 	</header>
 	<div class="main">
+						<div class="text-center">
+			<a th:href="|/|" class="btn btn-info btn-xs my-3 pull-right">掲示板一覧へ</a>
+			</div>
 		<div class="comment-container">
 			<div class="comment-index">
 				<div th:each="comment:${comments}" th:object="${comment}"
@@ -101,17 +115,17 @@
 				th:action="|/boards/${board.boardId}/comments/create|" style="width:40%; margin:10px auto;">
 				<div class="form-group text-center">
 					<label>タイトル</label> <input type="text" th:object="${comment}"
-						th:name="title" class="form-control" autofocus="autofocus">
+						th:name="title" class="form-control title" autofocus="autofocus">
 				</div>
 				<div class="form-group text-center">
 					<label for="exampleFormControlTextarea1">本文</label>
 					<textarea th:object="${comment}" th:name="text"
-						class="form-control" id="exampleFormControlTextarea1" rows="3"
+						class="form-control text" id="exampleFormControlTextarea1" rows="3"
 						required="required" autofocus="autofocus" style="margin-bottom:10px;"></textarea>
-					画像ファイルを選択：<input type="file" th:object="${imageForm}"
-						id="uploadFile" name="image" class="m-2" accept="/.png,/.jpeg" /><br />
+					画像ファイルを選択：<input type="file" th:object="${comment}"
+						id="uploadFile" name="image" class="m-2 image" accept="/.png,/.jpeg" /><br />
 				</div>
-				<div class="mb-3 text-center">
+				<div class="mb-3 text-center preview">
 					<img id="preview">
 				</div>
 				<button id="new_comment" class="btn btn-info btn-block login" type="submit">投稿する</button>
@@ -177,14 +191,6 @@
 		</div>
 
 	</div>
-	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-	<script src="/js/jquery.validate.min.js"></script>
-	<script src="/vendors/formvalidation/dist/js/FormValidation.min.js"></script>
-	<script
-		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-	<script
-		src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-	<script src="/js/comment.js" th:src="@{/js/comment.js}"></script>
 </body>
 </html>
 

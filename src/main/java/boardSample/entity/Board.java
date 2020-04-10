@@ -6,9 +6,16 @@ import java.util.List;
 
 import javax.persistence.*;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import boardSample.service.CommentService;
+
 @Entity
 @Table(name = "boards")
 public class Board implements Serializable{
+	
+//	@Autowired
+//	private CommentService commentService;
 
 	/**
 	 * 
@@ -29,11 +36,17 @@ public class Board implements Serializable{
 	
 	@Column(name = "created_at")
     private Date created_at;
-	
+		
     @PrePersist
     public void onPrePersist() {
         setCreated_at(new Date());
     }
+    
+	@Column(name = "comments_size")
+	private int comments_size;
+	
+	@Column(name = "last_comment_date")
+	private Date last_comment_date;
 	
 	//commentのプロパティ要素をmappedBy要素に指定。
 	//cascade属性を指定すると、自身への操作を関連Entityへも伝搬させることが出来る。
@@ -75,5 +88,18 @@ public class Board implements Serializable{
 		this.comments = comments;
 	}
 
+	public Date getLast_comment_date() {
+		return last_comment_date;
+	}
+	public void setLast_comment_date(Date last_comment_date) {
+		this.last_comment_date = last_comment_date;
+	}
+	
+	public int getComments_size() {
+		return comments_size;
+	}
+	public void setComments_size(int comments_size) {
+		this.comments_size = comments_size;
+	}
 	
 }

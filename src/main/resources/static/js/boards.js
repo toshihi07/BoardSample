@@ -25,5 +25,6 @@ $(function () {
 		  while(preview.firstChild) {
 		    preview.removeChild(preview.firstChild);
 		  }		 
+	  }
 		  
 });

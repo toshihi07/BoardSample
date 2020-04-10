@@ -1,6 +1,7 @@
 package boardSample.controller;
 
 import java.security.Principal;
+import java.sql.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import boardSample.AccountUserDetails;
+import boardSample.Interceptor;
 import boardSample.PageWrapper;
 import boardSample.entity.Board;
 import boardSample.entity.Comment;
@@ -39,13 +41,19 @@ public class BoardController {
 	@Autowired
 	private CommentService commentService;
 	
+	@Autowired
+	private Interceptor interceptor;
+	
+	
 	@GetMapping
 	public String index(Pageable pageable,Model model,ModelMap modelMap) {
 	    Page<Board> boardPages = boardService.findAll(pageable);
         PageWrapper<Board> page = new PageWrapper<Board>(boardPages, "/");
 	    model.addAttribute("page", page);
         model.addAttribute("boards", page.getContent());
-		return "/board/boardIndex";
+        Boolean login = interceptor.isUserLogged();
+        model.addAttribute("login", login);
+     	return "/board/boardIndex";
 	    }
 	
 	@GetMapping("/boards/new")
@@ -66,13 +74,17 @@ public class BoardController {
 	@GetMapping("/boards/{id}")
 	public String show(@PathVariable int id, Model model,Pageable pageable) {
 		//page処理
+		String sId = String.valueOf(id);
 		Board board = boardService.getBoard(id);
 	    Page<Comment> commentPages = commentService.findAll(board,pageable);
-        PageWrapper<Comment> page = new PageWrapper<Comment>(commentPages,"/boards/{id}");
+        PageWrapper<Comment> page = new PageWrapper<Comment>(commentPages,"/boards/" + sId);
 	    model.addAttribute("page", page);
         model.addAttribute("comments", page.getContent());
-        
         List<Comment> Comment_list = commentService.findAll(id);
+        //ログイン確認
+        Boolean login = interceptor.isUserLogged();
+        model.addAttribute("login", login);
+        
         int comments_size = Comment_list.size();
         
         if (comments_size == 0) {
@@ -81,7 +93,6 @@ public class BoardController {
         
         model.addAttribute("comments_size",comments_size);
         
-
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         AccountUserDetails subject = (AccountUserDetails) auth.getPrincipal();
         User user = subject.getUser();
@@ -99,6 +110,9 @@ public class BoardController {
         PageWrapper<Board> page = new PageWrapper<Board>(boardPages, "/");
 	    model.addAttribute("page", page);
         model.addAttribute("boards", page.getContent());
+        //ログイン確認
+        Boolean login = interceptor.isUserLogged();
+        model.addAttribute("login", login);
 		return "/board/boardIndex";
 	}
 

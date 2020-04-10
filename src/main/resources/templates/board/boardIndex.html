@@ -2,12 +2,12 @@
 <html lang="ja" xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="stylesheet" media="all" th:href="@{/css/style.css}" />
-<link rel="stylesheet" media="all"
-	th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}" />
+<link rel="stylesheet" media="all" th:href="@{/css/style.css}"/>
+<link rel="stylesheet" media="all" th:href="@{/css/responsive.css}"/>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 <link href="/css/boards.css" th:href="@{/css/boards.css}"
 	rel="stylesheet"></link>
-<script src="/js/boards.js" th:src="@{/js/boards.js}"></script>
+	<script src="/js/boards.js" th:src="@{/js/boards.js}"></script>
 <head>
 <meta charset="UTF-8">
 <title>掲示板一覧</title>
@@ -27,18 +27,20 @@
 				<div>
 					<a href="/boards/new" class="btn btn-info btn-xs pull-right">新規作成</a>
 				</div>
-								<a href="/loginForm"
-					class="btn btn-info btn-xs pull-right mx-5　navbar-brand">ログイン</a>
-					
+				<a th:unless="${login}" href="/loginForm"
+					class="btn btn-info btn-xs pull-right mx-5　navbar-brand">ログイン</a>		
 			<div sec:authorize="authenticated">
 				<form role="form" id="logout" th:action="@{/logout}" method="post">
 					<button class="btn btn-info btn-xs pull-right mx-5　navbar-brand"
 						type="submit">ログアウト</button>
 						</form>
 				</div>
-				
+				<div>
+				<span class="fa fa-bars menu-icon"></span>
+				</div>
 			</nav>
 		</div>
+			
 	</header>
 	<div class="main">
 		<div class="container">
@@ -57,10 +59,10 @@
 						<td th:text="${board.boardId}" scope="row">1</td>
 						<td><a
 							th:href="@{/boards/{board_id}(board_id=${board.boardId})}"
-							th:text="${{board.name}}" th:method="get">ポケモン</a></td>
+							th:text="${{board.name} + '(' + {board.comments_size} + ')'}" th:method="get">ポケモン</a></td>
 						<td th:text="${{board.user.username}}">サトシ</td>
 						<td th:text="${{board.created_at}}"></td>
-						<td>2020年2月25日</td>
+						<td th:text="${{board.last_comment_date}}">2020年2月25日</td>
 					</tr>
 				</tbody>
 			</table>
