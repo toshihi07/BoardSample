@@ -17,7 +17,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	//SpringSecurityの制限を無視してほしい部分を記載
 	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().antMatchers("/webjars/**", "/favicon.ico", "/css/**",
+		web.ignoring().antMatchers("/webjars/**", "/css/**",
 				"/js/**", "/img/**");
 	}
 
