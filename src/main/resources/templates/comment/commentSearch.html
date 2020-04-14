@@ -3,8 +3,7 @@
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="stylesheet" media="all" th:href="@{/css/style.css}" />
-<link rel="stylesheet" media="all"
-	th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}" />
+ <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 <head>
 <meta charset="UTF-8">
 <title>検索結果一覧</title>
@@ -26,6 +25,14 @@
 						placeholder="本文からキーワード検索" aria-label="Search">
 					<button class="btn btn-outline-success my-2 my-sm-0" type="submit">検索</button>
 				</form>
+								<a th:unless="${login}" href="/loginForm"
+					class="btn btn-info btn-xs pull-right mx-5　navbar-brand">ログイン</a>		
+			<div sec:authorize="authenticated">
+				<form role="form" id="logout" th:action="@{/logout}" method="post">
+					<button class="btn btn-info btn-xs pull-right mx-5　navbar-brand"
+						type="submit">ログアウト</button>
+						</form>
+				</div>
 			</nav>
 			<table class="table table-striped">
 				<thead>
