@@ -77,7 +77,7 @@ public class BoardController {
 		String sId = String.valueOf(id);
 		Board board = boardService.getBoard(id);
 	    Page<Comment> commentPages = commentService.findAll(board,pageable);
-        PageWrapper<Comment> page = new PageWrapper<Comment>(commentPages,"/boards/" + sId);
+        PageWrapper<Comment> page = new PageWrapper<Comment>(commentPages,"boards/" + sId);
 	    model.addAttribute("page", page);
         model.addAttribute("comments", page.getContent());
         List<Comment> Comment_list = commentService.findAll(id);
