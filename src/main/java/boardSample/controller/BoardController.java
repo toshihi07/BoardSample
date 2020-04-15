@@ -53,7 +53,7 @@ public class BoardController {
         model.addAttribute("boards", page.getContent());
         Boolean login = interceptor.isUserLogged();
         model.addAttribute("login", login);
-     	return "/board/boardIndex";
+     	return "board/boardIndex";
 	    }
 	
 	@GetMapping("/boards/new")
@@ -113,7 +113,7 @@ public class BoardController {
         //ログイン確認
         Boolean login = interceptor.isUserLogged();
         model.addAttribute("login", login);
-		return "/board/boardIndex";
+		return "board/boardIndex";
 	}
 
 }

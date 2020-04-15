@@ -28,7 +28,7 @@ public class UserController{
 	
 	@GetMapping("/signup")
 	public ModelAndView add(@ModelAttribute("formModel")User user,ModelAndView mav){
-		mav.setViewName("/user/signup");
+		mav.setViewName("user/signup");
 		return mav;
 	}
 
@@ -37,13 +37,13 @@ public class UserController{
 	public ModelAndView form(@ModelAttribute("formModel")User user, ModelAndView mav){
 		if(userRepository.countByUsername(user.getUsername()) > 0){
 			mav.addObject("obj", user.getUsername() + "は既に使用されてるユーザ名です。");
-			mav.setViewName("/user/signup");
+			mav.setViewName("user/signup");
 		} else {
 			user.setPassword(passwdEncoder.encode(user.getPassword()));
 			user.setEmail(user.getEmail());
 			repository.saveAndFlush(user);
 			mav.addObject("user", user.getUsername() + "さん登録完了しました。");
-			mav.setViewName("/login/loginForm");
+			mav.setViewName("login/loginForm");
 		}
 		return mav;
 	}

@@ -338,6 +338,6 @@ public class CommentController{
 	    
 	    model.addAttribute("comments",comments);
 	    model.addAttribute("id",id);
-		return "/comment/commentImpotResult";
+		return "comment/commentImpotResult";
 	}
 }
