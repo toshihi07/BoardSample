@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import boardSample.entity.RoleName;
 import boardSample.entity.User;
 import boardSample.repository.UserRepository;
 
@@ -41,6 +42,7 @@ public class UserController{
 		} else {
 			user.setPassword(passwdEncoder.encode(user.getPassword()));
 			user.setEmail(user.getEmail());
+			user.setRoleName("User");
 			repository.saveAndFlush(user);
 			mav.addObject("user", user.getUsername() + "さん登録完了しました。");
 			mav.setViewName("login/loginForm");

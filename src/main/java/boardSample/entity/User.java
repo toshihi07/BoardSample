@@ -27,8 +27,7 @@ public class User implements Serializable{
 	private String password;
 	
 	@Column(name = "role_name")
-	@Enumerated(EnumType.STRING)
-	private RoleName roleName;
+	private String roleName;
 	
 	@OneToMany(mappedBy = "user")
 	List<Board> boards;
@@ -68,12 +67,29 @@ public class User implements Serializable{
 		this.password = password;
 	}
 
-	public RoleName getRoleName() {
+	public String getRoleName() {
 		return roleName;
 	}
 
-	public void setRoleName(RoleName roleName) {
+	public void setRoleName(String roleName) {
 		this.roleName = roleName;
 	}
-	
+
+	public List<Board> getBoards() {
+		return boards;
+	}
+
+	public void setBoards(List<Board> boards) {
+		this.boards = boards;
+	}
+
+	public List<Comment> getComments() {
+		return comments;
+	}
+
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
+	}
+
+
 }
