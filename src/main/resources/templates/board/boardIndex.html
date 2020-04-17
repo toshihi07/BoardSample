@@ -7,12 +7,15 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 <link href="/css/boards.css" th:href="@{/css/boards.css}"
 	rel="stylesheet"></link>
+	<link href="/css/footer.css" th:href="@{/css/footer.css}"
+	rel="stylesheet"></link>
 	<script src="/js/boards.js" th:src="@{/js/boards.js}"></script>
 <head>
 <meta charset="UTF-8">
 <title>掲示板一覧</title>
 </head>
 <body>
+  <div class="wrapper">
 	<header class="p-header my-3">
 		<div class="p-header-container">
 			<nav class="navbar navbar-light justify-content-between">
@@ -44,7 +47,7 @@
 	</header>
 	<div class="main">
 		<div class="container">
-			<table class="table table-striped my-5 border-dark">
+			<table class="table table-striped my-5">
 				<thead>
 					<tr>
 						<th scope="col">No.</th>
@@ -95,8 +98,9 @@
                 </li>
             </ul>
         </div>
-        
 		</div>
+	</div>
+	<footer th:include="footer :: footer"></footer>
 	</div>
 	<script type="text/javascript"
 		th:src="@{/webjars/jquery/1.12.4/jquery.min.js}"></script>

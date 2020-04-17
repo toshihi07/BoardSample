@@ -6,11 +6,15 @@
  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 <link href="/css/boards.css" th:href="@{/css/boards.css}"
 	rel="stylesheet"></link>
+		<link href="/css/footer.css" th:href="@{/css/footer.css}"
+	rel="stylesheet"></link>
 <head>
 <meta charset="UTF-8">
 <title>掲示板個別ページ</title>
 </head>
 <body>
+  <div class="wrapper">
+
 	<header class="p-header my-3">
 		<div class="p-header-container">
 			<nav class="navbar navbar-light justify-content-between">
@@ -48,6 +52,8 @@
 	<script
 		src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 	<script src="/js/comment.js" th:src="@{/js/comment.js}"></script>
+		<footer th:include="footer :: footer"></footer>
+	</div>
 </body>
 </html>
 

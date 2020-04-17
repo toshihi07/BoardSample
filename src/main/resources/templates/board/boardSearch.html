@@ -4,13 +4,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="stylesheet" media="all" th:href="@{/css/style.css}" />
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">	
+<link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
 <link href="/css/boards.css" th:href="@{/css/boards.css}"
+	rel="stylesheet"></link>
+	<link href="/css/footer.css" th:href="@{/css/footer.css}"
 	rel="stylesheet"></link>
 <head>
 <meta charset="UTF-8">
 <title>掲示板個別ページ</title>
 </head>
 <body>
+  <div class="wrapper">
+
 	<header class="p-header my-3">
 		<div class="p-header-container">
 			<nav class="navbar navbar-light justify-content-between">
@@ -75,7 +80,7 @@
 					<div
 						class="content-footer d-flex justify-content-end flex-row bd-highlight">
 						<div th:if="${comment.image != '' AND comment.image != NULL}"
-							th:text="画像あり" style="line-height: 33px;"></div>
+							style="line-height: 33px;"><i class="far fa-file-image fa-2x"></i></div>
 						<a th:if="${comment.user.userId == loginUser_id}"
 							class="btn btn-info edit-btn"
 							th:href="|/boards/${board_id}/comments/*{commentId}/edit|">編集</a>
@@ -183,6 +188,8 @@
 	<script
 		src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 	<script src="/js/comment.js" th:src="@{/js/comment.js}"></script>
+		<footer th:include="footer :: footer"></footer>
+	</div>
 </body>
 </html>
 

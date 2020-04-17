@@ -4,11 +4,14 @@
 <link rel="stylesheet" media="all" th:href="@{/css/style.css}" />
  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 	<link href="/css/login.css" th:href="@{/css/login.css}" rel="stylesheet"></link>
+		<link href="/css/footer.css" th:href="@{/css/footer.css}"
+	rel="stylesheet"></link>
 	<script src="/js/login.js" th:src="@{/js/login.js}"></script>
 <head>
 <meta charset="UTF-8">
 </head>
-<body>
+<body>  
+<div class="wrapper">
 	<div class="container">
 		<div class="login-container">
 			<p th:text="${user}"></p>
@@ -29,5 +32,7 @@
 		th:src="@{/webjars/jquery/1.12.4/jquery.min.js}"></script>
 	<script type="text/javascript"
 		th:src="@{/webjars/bootstrap/3.4.1/js/bootstrap.min.js}"></script>
+			<footer th:include="footer :: footer"></footer>
+	</div>
 </body>
 </html>

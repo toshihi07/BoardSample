@@ -94,10 +94,16 @@ public class BoardController {
         model.addAttribute("comments_size",comments_size);
         
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if(auth.getPrincipal() != "anonymousUser") {
         AccountUserDetails subject = (AccountUserDetails) auth.getPrincipal();
         User user = subject.getUser();
         int user_id = user.getUserId();
  		model.addAttribute("loginUser_id", user_id);
+        }
+        else {
+			int user_id = -1;
+	 		model.addAttribute("loginUser_id", user_id);
+		}
  		model.addAttribute("board", board);
 		model.addAttribute("boardName", board.getName());		
 		model.addAttribute("board_id",id);

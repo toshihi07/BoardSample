@@ -4,7 +4,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="stylesheet" media="all" th:href="@{/css/style.css}" />
  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+ <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
 <link href="/css/boards.css" th:href="@{/css/boards.css}"
+	rel="stylesheet"></link>
+		<link href="/css/footer.css" th:href="@{/css/footer.css}"
 	rel="stylesheet"></link>
 <head>
 <meta charset="UTF-8">
@@ -23,6 +26,8 @@
   crossorigin="anonymous"></script>
 </head>
 <body>
+  <div class="wrapper">
+
 	<header class="p-header my-3">
 		<div class="p-header-container">
 			<nav class="navbar navbar-light justify-content-between">
@@ -91,7 +96,7 @@
 					<div
 						class="content-footer d-flex justify-content-end flex-row bd-highlight">
 						<div th:if="${comment.image != '' AND comment.image != NULL}"
-							th:text="画像あり" style="line-height: 33px;"></div>
+							 style="line-height: 33px;"><i class="far fa-file-image fa-2x"></i></div>
 						<a th:if="${comment.user.userId == loginUser_id}"
 							class="btn btn-info edit-btn"
 							th:href="|/boards/${board_id}/comments/*{commentId}/edit|">編集</a>
@@ -155,12 +160,12 @@
 			</div>
 		</div>
 
-		<div th:fragment='paginationbar'>
+		<div class="pager" th:fragment='paginationbar'>
 			<ul class='pagination justify-content-center'>
 				<li th:class="${page.firstPage}?'disabled':''"
-					style="display: inline"><span th:if='${page.firstPage}'>←先頭</span>
+					style="display: inline"><span th:if='${page.firstPage}'>«</span>
 					<a th:if='${not page.firstPage}'
-					th:href='@{${page.url}(page=0,size=${page.size})}'>←先頭</a></li>
+					th:href='@{${page.url}(page=0,size=${page.size})}'>«</a></li>
 				<li th:class="${page.hasPreviousPage}? '' : 'disabled'"
 					style="display: inline"><span
 					th:if='${not page.hasPreviousPage}'>«</span> <a
@@ -183,13 +188,15 @@
 					th:href='@{${page.url}(page=${page.number},size=${page.size})}'>»</a>
 				</li>
 				<li th:class="${page.lastPage}? 'disabled' : ''"
-					style="display: inline"><span th:if='${page.lastPage}'>末尾➝</span>
+					style="display: inline"><span th:if='${page.lastPage}'>»</span>
 					<a th:if='${not page.lastPage}'
 					th:href='@{${page.url}(page=${page.totalPages - 1},size=${page.size})}'>末尾➝</a>
 				</li>
 			</ul>
 		</div>
 
+	</div>
+		<footer th:include="footer :: footer"></footer>
 	</div>
 </body>
 </html>

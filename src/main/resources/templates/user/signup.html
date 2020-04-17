@@ -4,11 +4,15 @@
 <link rel="stylesheet" media="all" th:href="@{/css/style.css}" />
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 <link href="/css/login.css" th:href="@{/css/login.css}" rel="stylesheet"></link>
+	<link href="/css/footer.css" th:href="@{/css/footer.css}"
+	rel="stylesheet"></link>
 <script src="/js/login.js" th:src="@{/js/login.js}"></script>
 <head>
 <meta charset="UTF-8">
 </head>
 <body>
+  <div class="wrapper">
+
 	<p th:text="${obj}"></p>
 	<div class="container">
 		<div class="login-container">
@@ -37,6 +41,8 @@
 			<a href="loginForm" class="btn btn-info btn-block login signup" role="button"
 				aria-pressed="true">戻る</a>
 		</div>
+	</div>
+		<footer th:include="footer :: footer"></footer>
 	</div>
 </body>
 </html>

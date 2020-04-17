@@ -112,9 +112,9 @@ public class CommentController{
 		String commentId = String.valueOf(comment.getCommentId());
 		String boardId = String.valueOf(comment.getBoard().getBoardId());
 		String createdAt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(comment.getCreated_at());
-		String imageText = "画像あり";
+		String imageText = "";
 		if (comment.getImage() == "") {
-			imageText = "画像なし";
+			imageText = "";
 		} 
 		String boardName = board.getName();
         int comments_size = commentService.findByBoard_BoardId(board_id);
